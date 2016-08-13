@@ -1,0 +1,33 @@
+all: sndinfo sndcat sndmix sndgen
+
+sndinfo: cs229Object.o main.o utilFunctions.o
+	g++ -std=c++11 cs229Object.o main.o utilFunctions.o -o sndinfo
+cs229Object.o: cs229Object.cpp cs229Object.h
+	g++ -std=c++11 -c cs229Object.cpp
+main.o: cs229Object.cpp main.cpp cs229Object.h utilFunctions.cpp utilFunctions.h
+	g++ -std=c++11 -c cs229Object.cpp main.cpp utilFunctions.cpp
+utilFunctions.o: utilFunctions.h cs229Object.cpp cs229Object.h main.cpp
+	g++ -std=c++11 -c utilFunctions.cpp cs229Object.cpp
+
+sndcat: catmain.o cs229Object.o utilFunctions.o
+	g++ -std=c++11 cs229Object.o catmain.o utilFunctions.o -o sndcat
+catmain.o: catmain.cpp utilFunctions.cpp utilFunctions.h
+	g++ -std=c++11 -c catmain.cpp utilFunctions.cpp
+
+sndmix: mixmain.o cs229Object.o utilFunctions.o
+	g++ -std=c++11 cs229Object.o mixmain.o utilFunctions.o -o sndmix
+mixmain.o: mixmain.cpp utilFunctions.cpp utilFunctions.h
+	g++ -std=c++11 -c mixmain.cpp utilFunctions.cpp
+
+sndgen: genmain.o WaveGenerator.o ADSREnvelope.o utilFunctions.o cs229Object.o
+	g++ -std=c++11 genmain.o WaveGenerator.o ADSREnvelope.o utilFunctions.o cs229Object.o -o sndgen
+genmain.o: genmain.cpp WaveGenerator.cpp WaveGenerator.h utilFunctions.cpp utilFunctions.h ADSREnvelope.cpp ADSREnvelope.h
+	g++ -std=c++11 -c genmain.cpp WaveGenerator.cpp utilFunctions.cpp ADSREnvelope.cpp
+WaveGenerator.o: WaveGenerator.cpp WaveGenerator.h utilFunctions.cpp utilFunctions.h cs229Object.cpp cs229Object.h
+	g++ -std=c++11 -c WaveGenerator.cpp utilFunctions.cpp cs229Object.cpp
+ADSREnvelope.o: ADSREnvelope.cpp ADSREnvelope.h utilFunctions.cpp utilFunctions.h cs229Object.cpp cs229Object.h
+	g++ -std=c++11 -c ADSREnvelope.cpp utilFunctions.cpp cs229Object.cpp
+
+clean:
+	\rm *.o sndinfo sndcat sndmix sndgen
+	echo Clean Complete
